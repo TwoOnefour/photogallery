@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Explore Images{% endblock %}
+
+{% block content %}
+    <h2>Explore Images</h2>
+    <button id="random-explore">Random Explore</button>
+    <div id="image-display"></div>
+
+    <script>
+        document.getElementById('random-explore').addEventListener('click', function() {
+            fetch('/random_image')
+                .then(response => response.json())
+                .then(data => {
+                    const imgDisplay = document.getElementById('image-display');
+                    imgDisplay.innerHTML = `<img src="${data.url}" alt="Random Image">`;
+                });
+        });
+    </script>
+{% endblock %}
