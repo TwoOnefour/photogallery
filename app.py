@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
+from sqlalchemy import desc
 from werkzeug.utils import secure_filename
 from flask_login import (
     LoginManager,
@@ -37,28 +38,27 @@ login_manager.login_view = "login"
 #         self.username = username
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = "users"
-    name = db.Column(db.String(20), primary_key=True, nullable=False)
+    name = db.Column(db.String(20), nullable=False, primary_key=True)
     password = db.Column(db.String(32), nullable=False)
     privilege = db.Column(db.String(5), nullable=False)
     email = db.Column(db.String(32), nullable=False)
-    is_active = False
+    is_active = True
 
     def __repr__(self):
         return f"<User {self.name}>"
 
 
+    def get_id(self):
+        return self.name
 # In-memory user store
 # users = {"user1": User(id=1, username="user1"), "user2": User(id=2, username="user2")}
 
 
 @login_manager.user_loader
-def load_user(user_id):
-    for user in users.values():
-        if user.id == int(user_id):
-            return user
-    return None
+def load_user(user_name):
+    return User.query.get(user_name)
 
 
 def allowed_file(filename):
@@ -76,6 +76,7 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
         user = User.query.filter_by(name=username).first()
+        # user.id =
         # Here you should add logic to verify username and password
         # For demonstration, we assume any password is correct
         if user:
@@ -105,6 +106,13 @@ def get_user(username):
         return jsonify({"error": "User not found"}), 404
 
 
+# def latest_user():
+#     latest_user = User.query.order_by(desc(User.name)).first()
+#     if latest_user:
+#         return latest_user.id
+#     else:
+#         return 0
+
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "POST":
@@ -113,6 +121,7 @@ def signup():
         password = request.form["password"]
         email = request.form["email"]
         privilege = "user"
+        # id = latest_user() + 1
         if not username or not email:
             return jsonify({"error": "Invalid input"}), 400
 
