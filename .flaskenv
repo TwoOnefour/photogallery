@@ -1,0 +1,2 @@
+FLASK_APP=mypixiv
+FLASK_ENV=development
