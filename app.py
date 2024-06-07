@@ -19,7 +19,7 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = "your_secret_key"
 app.config["UPLOAD_FOLDER"] = "static/uploads"
 app.config["SQLALCHEMY_DATABASE_URI"] = (
-    "mysql+pymysql://albumy:asdasdasd123123123@pursuecode.cn:3306/photogallery"
+    "mysql+pymysql://albumy:asdasdasd123123123@someaddress:3306/photogallery"
 )
 db = SQLAlchemy(app)
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # Maximum file size: 16MB
