@@ -15,39 +15,43 @@
         document.addEventListener('DOMContentLoaded', function() {
             const imageContainer = document.getElementById('image-container');
             let loading = false;
-
+            let loadedImages = new Set();
+        
             function loadImages() {
                 if (loading) return;
                 loading = true;
                 document.getElementById('loading').style.display = 'block';
-
+        
                 fetch('/random_images')
                     .then(response => response.json())
                     .then(data => {
                         const fragment = document.createDocumentFragment();
                         data.images.forEach(image => {
-                            const col = document.createElement('div');
-                            col.classList.add('col-md-4', 'mb-4');
-                            const imgElement = document.createElement('img');
-                            imgElement.src = image.url;
-                            imgElement.classList.add('img-fluid');
-                            col.appendChild(imgElement);
-                            fragment.appendChild(col);
+                            if (!loadedImages.has(image.url)) {
+                                loadedImages.add(image.url);
+                                const col = document.createElement('div');
+                                col.classList.add('col-md-4', 'mb-4');
+                                const imgElement = document.createElement('img');
+                                imgElement.src = image.url;
+                                imgElement.classList.add('img-fluid');
+                                col.appendChild(imgElement);
+                                fragment.appendChild(col);
+                            }
                         });
                         imageContainer.appendChild(fragment);
                         loading = false;
                         document.getElementById('loading').style.display = 'none';
                     });
             }
-
+        
             function handleScroll() {
                 if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
                     loadImages();
                 }
             }
-
+        
             window.addEventListener('scroll', handleScroll);
-
+        
             // Initial load
             loadImages();
         });
