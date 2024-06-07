@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Images{% endblock %}
+
+{% block content %}
+    <h2>Manage Images</h2>
+    <form method="post" action="{{ url_for('manage') }}" enctype="multipart/form-data" class="mb-4">
+        <div class="form-group">
+            <label for="image">Upload Image:</label>
+            <input type="file" id="image" name="image" class="form-control-file" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
+
+    <h3>Your Images</h3>
+    <div class="row" id="image-gallery">
+        {% for image_url in images %}
+            <div class="col-md-4 mb-4">
+                <img src="{{ image_url }}" alt="Image" class="img-fluid">
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

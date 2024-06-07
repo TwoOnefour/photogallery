@@ -5,23 +5,27 @@ body {
     background-color: #f4f4f4;
 }
 
-nav {
+.navbar {
+    margin-bottom: 2rem;
+}
+
+.uploaded-image {
+    width: 100%;
+    height: auto;
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
+.load-more {
+    display: block;
+    margin: 2rem auto;
+    padding: 1rem 2rem;
     background-color: #333;
     color: #fff;
-    padding: 1rem;
-    text-align: center;
+    border: none;
+    cursor: pointer;
 }
 
-nav a {
-    color: #fff;
-    margin: 0 1rem;
-    text-decoration: none;
-}
-
-.content {
-    padding: 2rem;
-}
-
-h1, h2 {
-    color: #333;
+.load-more:hover {
+    background-color: #555;
 }

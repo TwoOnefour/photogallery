@@ -4,17 +4,52 @@
 
 {% block content %}
     <h2>Explore Images</h2>
-    <button id="random-explore">Random Explore</button>
-    <div id="image-display"></div>
+    <div id="image-container" class="row"></div>
+    <div id="loading" class="text-center my-4" style="display:none;">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
 
     <script>
-        document.getElementById('random-explore').addEventListener('click', function() {
-            fetch('/random_image')
-                .then(response => response.json())
-                .then(data => {
-                    const imgDisplay = document.getElementById('image-display');
-                    imgDisplay.innerHTML = `<img src="${data.url}" alt="Random Image">`;
-                });
+        document.addEventListener('DOMContentLoaded', function() {
+            const imageContainer = document.getElementById('image-container');
+            let loading = false;
+
+            function loadImages() {
+                if (loading) return;
+                loading = true;
+                document.getElementById('loading').style.display = 'block';
+
+                fetch('/random_images')
+                    .then(response => response.json())
+                    .then(data => {
+                        const fragment = document.createDocumentFragment();
+                        data.images.forEach(image => {
+                            const col = document.createElement('div');
+                            col.classList.add('col-md-4', 'mb-4');
+                            const imgElement = document.createElement('img');
+                            imgElement.src = image.url;
+                            imgElement.classList.add('img-fluid');
+                            col.appendChild(imgElement);
+                            fragment.appendChild(col);
+                        });
+                        imageContainer.appendChild(fragment);
+                        loading = false;
+                        document.getElementById('loading').style.display = 'none';
+                    });
+            }
+
+            function handleScroll() {
+                if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+                    loadImages();
+                }
+            }
+
+            window.addEventListener('scroll', handleScroll);
+
+            // Initial load
+            loadImages();
         });
     </script>
 {% endblock %}
