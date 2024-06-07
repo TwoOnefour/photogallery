@@ -8,12 +8,14 @@ from flask_login import (
     current_user,
     login_required,
 )
+from flask_sqlalchemy import SQLAlchemy
 import os
 import random
-
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "your_secret_key"
 app.config["UPLOAD_FOLDER"] = "static/uploads"
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://albumy:asdasdasd123123123@pursuecode.cn:3306/photogallery'
+db = SQLAlchemy(app)
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # Maximum file size: 16MB
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
 
@@ -24,14 +26,23 @@ login_manager.login_view = "login"
 
 
 # Dummy user model
-class User(UserMixin):
-    def __init__(self, id, username):
-        self.id = id
-        self.username = username
+# class User(UserMixin):
+#     def __init__(self, id, username):
+#         self.id = id
+#         self.username = username
 
+class User(db.Model):
+    __tablename__ = 'users'
+    name = db.Column(db.String(20), primary_key=True, nullable=False)
+    password = db.Column(db.String(32), nullable=False)
+    privilege = db.Column(db.String(5), nullable=False)
+    email = db.Column(db.String(32), nullable=False)
+    is_active = False
+    def __repr__(self):
+        return f'<User {self.name}>'
 
 # In-memory user store
-users = {"user1": User(id=1, username="user1"), "user2": User(id=2, username="user2")}
+# users = {"user1": User(id=1, username="user1"), "user2": User(id=2, username="user2")}
 
 
 @login_manager.user_loader
@@ -41,10 +52,8 @@ def load_user(user_id):
             return user
     return None
 
-
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
-
 
 @app.route("/")
 def index():
@@ -56,10 +65,11 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
+        user = User.query.filter_by(name=username).first()
         # Here you should add logic to verify username and password
         # For demonstration, we assume any password is correct
-        if username in users:
-            login_user(users[username])
+        if user:
+            login_user(user)
             flash("Logged in successfully.")
             return redirect(url_for("index"))
         else:
@@ -67,11 +77,33 @@ def login():
     return render_template("login.html")
 
 
+def get_user(username):
+    user = User.query.filter_by(name=username).first()
+    if user:
+        return jsonify({
+            "name": user.name,
+            "password": user.password,
+            "privilege": user.privilege,
+            "email": user.email
+        }), 200
+    else:
+        return jsonify({"error": "User not found"}), 404
+
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "POST":
         # Handle signup logic here
-        pass
+        username = request.form["username"]
+        password = request.form["password"]
+        email = request.form['email']
+        privilege = "user"
+        if not username or not email:
+            return jsonify({"error": "Invalid input"}), 400
+
+        new_user = User(name=username, password=password, privilege=privilege, email=email)
+        db.session.add(new_user)
+        db.session.commit()
+
     return render_template("signup.html")
 
 
