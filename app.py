@@ -19,7 +19,7 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = "your_secret_key"
 app.config["UPLOAD_FOLDER"] = "static/uploads"
 app.config["SQLALCHEMY_DATABASE_URI"] = (
-    "mysql+pymysql://albumy:asdasdasd123123123@someaddress:3306/photogallery"
+    "mysql+pymysql://photogallery:asdasdasd123123123@someaddress:3306/photogallery"
 )
 db = SQLAlchemy(app)
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # Maximum file size: 16MB
@@ -49,9 +49,10 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return f"<User {self.name}>"
 
-
     def get_id(self):
         return self.name
+
+
 # In-memory user store
 # users = {"user1": User(id=1, username="user1"), "user2": User(id=2, username="user2")}
 
@@ -112,6 +113,7 @@ def get_user(username):
 #         return latest_user.id
 #     else:
 #         return 0
+
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
