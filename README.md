@@ -1,4 +1,4 @@
-### Image Browsing App
+### photogallery
 
 This project is part of my coursework assignment. It is a simple image browsing web application built with Flask and Bootstrap. The application allows users to upload, manage, and explore images with a seamless masonry layout and lazy loading functionality.
 
@@ -29,8 +29,8 @@ This project is part of my coursework assignment. It is a simple image browsing 
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/yourusername/image-browsing-app.git
-   cd image-browsing-app
+   git clone https://github.com/yourusername/photogallery
+   cd photogallery
    ```
 
 2. Create and activate a virtual environment:
@@ -60,7 +60,7 @@ This project is part of my coursework assignment. It is a simple image browsing 
    );
    ```
 
-2. Create a file named `.env` in the root directory of the project and add the following configuration:
+2. Create a file named `.flaskenv` in the root directory of the project and add the following configuration:
    ```plaintext
    SECRET_KEY=your_secret_key
    SQLALCHEMY_DATABASE_URI=mysql+pymysql://photogallery:asdasdasd123123123@localhost/photogallery
