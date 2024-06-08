@@ -1,4 +1,4 @@
-### Image Browsing App
+### photogallery
 
 This project is part of my coursework assignment. It is a simple image browsing web application built with Flask and Bootstrap. The application allows users to upload, manage, and explore images with a seamless masonry layout and lazy loading functionality.
 
